@@ -21,6 +21,35 @@ const resolvers = {
                     }
                 });
             });
+        },
+        filteredUsers: (_, args) => {
+            return new Promise((resolve, reject) => {
+                if (args.name != null && args.email != null) {
+                    database.all(`SELECT * FROM users WHERE name = ? AND email = ?`, [args.name, args.email], (err, rows) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(rows);
+                        }
+                    });
+                } else if (args.name != null) {
+                    database.all(`SELECT * FROM users WHERE name = ?`, [args.name], (err, rows) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(rows);
+                        }
+                    });   
+                } else if (args.email != null) {
+                    database.all(`SELECT * FROM users WHERE email = ?`, [args.email], (err, rows) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(rows);
+                        }
+                    });
+                }
+            });
         }   
     },
     Mutation: {

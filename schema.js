@@ -7,6 +7,7 @@ export const types = `#graphql
 
     type Query {
         users: [User]
+        filteredUsers(name: String, email: String): [User] 
     }
 
     type Mutation {
