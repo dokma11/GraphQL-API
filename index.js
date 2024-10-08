@@ -27,6 +27,14 @@ const resolvers = {
         addUser: (_, args) => {
             return new Promise((resolve, reject) => {
                 const { name, email } = args;
+
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (email && !emailRegex.test(email)) {
+                    reject(new Error('Invalid email format'));
+                    return;
+                }
+
                 database.run(`INSERT INTO users (name, email) VALUES (?, ?)`, [name, email], function (err) {
                     if (err) {
                         reject(err);
@@ -44,12 +52,20 @@ const resolvers = {
                     } else {
                         if (!user) {
                             reject(new Error(`User with id = ? not found`, args.id));
+                            return;
                         }
 
                         if (args.name != null) {
                             user.name = args.name;   
                         }
                         if (args.email != null) {
+                            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                            if (args.email && !emailRegex.test(args.email)) {
+                                reject(new Error('Invalid email format'));
+                                return;
+                            }
+
                             user.email = args.email;
                         }
                         
